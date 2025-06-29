@@ -105,7 +105,10 @@ Photos of the build can be found in [`images/`](./images/). A few examples:
 
 ## 📝 Original Build Guide
 
-This project was inspired by:  
+This project was inspired by Katron.org. 
+Original Post: https://katron.org/blog/2021/10/raspberry-pi-gps/
+
+and if the blog gets taken down, here is a local copy of the page:
 📖 [`katron-rp1-GPS.html`](./source_blog/katron-rp1-GPS.html)
 
 The full referenced files are available in [`source_blog/katron-rp1-GPS_files/`](./source_blog/katron-rp1-GPS_files/)
