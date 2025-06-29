@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>NTP using Raspberry Pi 4 with GPS</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="katron-rp1-GPS_files/main.css">
+  <link rel="canonical" href="https://katron.org/blog/2021/10/raspberry-pi-gps/">
+  <link rel="alternate" type="application/rss+xml" title="Blog" href="https://katron.org/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="https://katron.org/">Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+        </svg>
+      </a>
+
+      <div class="trigger">
+          <a class="page-link" href="https://katron.org/projects/">Projects</a>
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">NTP using Raspberry Pi 4 with GPS</h1>
+    <p class="post-meta">
+        <time datetime="2021-10-15T00:00:00-04:00" itemprop="datePublished">Oct 15, 2021</time>
+         • Tags: <a href="https://katron.org/tag/raspberry-pi/" rel="tag">raspberry pi</a>, <a href="https://katron.org/tag/gps/" rel="tag">gps</a>, <a href="https://katron.org/tag/ntp/" rel="tag">ntp</a>
+    </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    
+<h2 id="hardware">Hardware</h2>
+<h3 id="parts">Parts</h3>
+
+<ul>
+  <li><a href="https://www.adafruit.com/product/4292">Raspberry Pi 4</a>.
+Any Raspberry Pi Model B will work. The Pi 4 moved the Ethernet to PCIe from USB so that will be less jitter for LAN traffic.</li>
+  <li><a href="https://www.adafruit.com/product/3953">PoE HAT</a></li>
+  <li><a href="https://www.adafruit.com/product/2324">Ultimate GPS HAT for Raspberry Pi</a></li>
+  <li>4x 15+5 mm M2.5 brass standoffs.
+I bought a large package of multiple sizes on Amazon.
+You need a 15 mm tall standoff for the stacking header below.</li>
+  <li><a href="https://www.adafruit.com/product/2223">GPIO Stacking Header</a>.
+This is the “Extra-long 2x20” version with 10 mm pins.</li>
+  <li><a href="https://www.adafruit.com/product/4855">GPIO Female Socket Riser Header</a>.
+With the GPIO pins higher up, the PoE pins also need a header to reach the PoE HAT.</li>
+  <li><a href="https://www.adafruit.com/product/851">SMA to uFL RF Adapter Cable</a></li>
+  <li><a href="https://www.adafruit.com/product/960">GPS Antenna</a></li>
+</ul>
+
+<p>I also got a <a href="https://www.adafruit.com/product/3083">heatsink</a> for the Raspberry Pi so the fan on the PoE HAT would not need to run as much.
+Once everything was assembled, there was about 2 mm of clearance between the fan and the GPS HAT.</p>
+
+<p>I ordered almost everything from Adafruit because they are close by so shipping is fast.</p>
+
+<h3 id="assembly">Assembly</h3>
+
+<p>The Ultimate GPS HAT required soldering the included header.
+I have seen other GPS HATs that do not require soldering if that is a problem.
+I opted for this one because I had the tools, this is what Adafruit had, and rather wanted to try soldering.</p>
+
+<p>Here is a component overview with everything that went into the build.
+The heatsink has already been applied.
+<img src="katron-rp1-GPS_files/component-overview.jpg"></p>
+
+<p>Connect the stacking and 2x2 headers then attach the PoE HAT to them with the 15 mm standoffs to verify the PoE HAT works.
+The pins on the stacking header will go through the PoE HAT.
+<img src="katron-rp1-GPS_files/rpi4-poe-hat.jpg"></p>
+
+<p>Use the standoffs included with the PoE HAT on top of the HAT and 
+attach the GPS HAT on top of PoE and use the PoE HAT’s screws to secure 
+everything together.</p>
+
+<p>The PoE HAT was a bit finicky to use.
+The first time I connected the PoE HAT, everything was fine.
+I then disconnected everything for pictures, reconnected everything, 
+soldered the header to the GPS HAT, and then the PoE HAT didn’t power on
+ the Pi.
+I disconnected everything yet again, connected only the PoE HAT, and it 
+worked again.
+I connected the GPS HAT a second time and it still worked so I don’t 
+know what happened before.</p>
+
+<h2 id="software">Software</h2>
+
+<p>All of the steps assume Raspbian 10 (Buster).
+Adjust the packages to install to your distro of choice if you are not using Raspbian.
+The configuration of the software should remain very similar.</p>
+
+<p>Install everything needed now at once.
+I opted for chrony but NTP works well and needs only small translations of the chrony options.
+Contrary to all other documentation I have seen on this, <em>you do not need to compile anything from scratch</em>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo apt install chrony gpsd gpsd-clients pps-tools
+</code></pre></div></div>
+
+<h3 id="serial-port">Serial Port</h3>
+
+<p>The serial port is used to receive the <a href="https://gpsd.gitlab.io/gpsd/NMEA.html">NMEA 0183</a> data from the GPS device.
+Logging in from the serial port must be disabled but the serial hardware kept enabled for communication.</p>
+
+<p>Run <code class="language-plaintext highlighter-rouge">sudo raspi-config</code>, choose “Interface Options”.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo raspi-config
+┌─────────┤ Raspberry Pi Software Configuration Tool (raspi-config) ├──────────┐
+│                                                                              │
+│       1 System Options       Configure system settings                       │
+│       2 Display Options      Configure display settings                      │
+│       3 Interface Options    Configure connections to peripherals            │
+│       4 Performance Options  Configure performance settings                  │
+│       5 Localisation Options Configure language and regional settings        │
+│       6 Advanced Options     Configure advanced settings                     │
+│       8 Update               Update this tool to the latest version          │
+│       9 About raspi-config   Information about this configuration tool       │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                     &lt;Select&gt;                     &lt;Finish&gt;                    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+</code></pre></div></div>
+<p>Then choose “Serial Port”.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌─────────┤ Raspberry Pi Software Configuration Tool (raspi-config) ├──────────┐
+│                                                                              │
+│    P1 Camera      Enable/disable connection to the Raspberry Pi Camera       │
+│    P2 SSH         Enable/disable remote command line access using SSH        │
+│    P3 VNC         Enable/disable graphical remote access using RealVNC       │
+│    P4 SPI         Enable/disable automatic loading of SPI kernel module      │
+│    P5 I2C         Enable/disable automatic loading of I2C kernel module      │
+│    P6 Serial Port Enable/disable shell messages on the serial connection     │
+│    P7 1-Wire      Enable/disable one-wire interface                          │
+│    P8 Remote GPIO Enable/disable remote access to GPIO pins                  │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                     &lt;Select&gt;                     &lt;Back&gt;                      │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+</code></pre></div></div>
+<p>Select “No” to disable the login shell over serial port and then “Yes” to keep the serial port hardware enabled.
+Press Tab to select “Finish”.
+The utility will prompt you to reboot so do that.</p>
+
+<p>Once the Pi comes back up, it is time to test the GPS HAT.
+Set the mode for <code class="language-plaintext highlighter-rouge">/dev/serial0</code> to raw, 9600 baud, 8 bits, no modem control signals, and one stop bit.
+See the <code class="language-plaintext highlighter-rouge">stty(1)</code> man page for more information on everything.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo stty -F /dev/serial0 raw 9600 cs8 clocal -cstopb
+</code></pre></div></div>
+
+<p>Now check <code class="language-plaintext highlighter-rouge">/dev/serial0</code> to verify NMEA data appears.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /dev/serial0
+0.15,81.69,210821,,,A*56
+$GNVTG,81.69,T,,M,0.15,N,0.28,K,A*1B
+$GNGGA,154540.000,4XXX.XXXX,N,07XXX.XXXX,W,1,11,0.92,1XX.X,M,-34.2,M,,*4E
+$GPGSA,A,3,02,05,20,06,19,09,,,,,,,1.25,0.92,0.84*01
+$GLGSA,A,3,65,87,88,71,72,,,,,,,,1.25,0.92,0.84*10
+$GNRMC,154540.000,A,4XXX.XXXX,N,07XXX.XXXX,W,0.57,81.69,210821,,,A*57
+</code></pre></div></div>
+<p>There should be output regardless if there is a fix or not.
+Once there is a fix, more of the GPS data will be filled in with much less “mostly comma” output.
+This HAT has a LED that will blink every second when it is searching and slow to blinking every 15 seconds when it has a fix.</p>
+
+<p>I was able to get a fix within a few minutes while indoors, 20 feet from a window, and without attaching the external antenna.</p>
+
+<h4 id="one-pulse-per-second-1pps">One Pulse Per Second (1PPS)</h4>
+
+<p>Use the pps-tools package to monitor the 1 Pulse Per Second GPS sends to get exactly when each GPS second begins.</p>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">/boot/config.txt</code> to enable kernel support for PPS.
+<code class="language-plaintext highlighter-rouge">/boot/overlays/README</code> documents the available overlays and <code class="language-plaintext highlighter-rouge">pps-gpio</code> is listed in there.
+The Adafruit GPS HAT uses GPIO pin 4 so add that to <code class="language-plaintext highlighter-rouge">config.txt</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dtoverlay=pps-gpio,gpiopin=4
+</code></pre></div></div>
+<p>Reboot to use the overlay.</p>
+
+<p>When the Pi boots up, test the signal is received with <code class="language-plaintext highlighter-rouge">ppstest</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo ppstest /dev/pps0
+trying PPS source "/dev/pps0"
+found PPS source "/dev/pps0"
+ok, found 1 source(s), now start fetching data...
+source 0 - assert 1629489053.004789031, sequence: 98 - clear  0.000000000, sequence: 0
+source 0 - assert 1629489054.004796073, sequence: 99 - clear  0.000000000, sequence: 0
+source 0 - assert 1629489055.004806575, sequence: 100 - clear  0.000000000, sequence: 0
+</code></pre></div></div>
+
+<h3 id="gpsd">GPSD</h3>
+
+<p>The gpsd package includes a <a href="https://www.freedesktop.org/software/systemd/man/systemd.socket.html">systemd socket unit file</a>, <code class="language-plaintext highlighter-rouge">gpsd.socket</code>, for systemd to automatically start GPSD when something connects to the default GPSD port of 2947.
+This is useful for regular GPS use but can be frustrating when debugging.
+My advice is to stop (<code class="language-plaintext highlighter-rouge">sudo systemctl stop gpsd.socket</code>) and disable (<code class="language-plaintext highlighter-rouge">sudo systemctl disable gpsd.socket</code>) the unit file if you need to debug GPSD.
+Leaving <code class="language-plaintext highlighter-rouge">gpsd.socket</code> disabled will be fine for timekeeping because <code class="language-plaintext highlighter-rouge">gpsd.service</code> will be used instead.</p>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">/etc/default/gpsd</code> to set <code class="language-plaintext highlighter-rouge">DEVICES</code> to use the serial port to receive GPS NMEA data and the <code class="language-plaintext highlighter-rouge">pps0</code> device to receive the kernel’s PPS.
+Also set <code class="language-plaintext highlighter-rouge">GPSD_OPTIONS</code> to tell GPSD to immediately talk to the device and not wait for a client to connect.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DEVICES="/dev/serial0 /dev/pps0"
+GPSD_OPTIONS="-n"
+</code></pre></div></div>
+
+<p>Restart GPSD to use those devices and enable it to start automatically at boot.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl restart gpsd.service
+$ sudo systemctl enable gpsd.service
+</code></pre></div></div>
+
+<p>Run <code class="language-plaintext highlighter-rouge">gpsmon</code> or <code class="language-plaintext highlighter-rouge">cgps -s</code> to connect to GPSD and display the GPS information.
+Check for PPS data and PPS lines to appear in the packet log.
+<em>Note</em>, if the terminal is 24 lines tall, you will only see a 
+single line of the packet log and it will be difficult to spot the PPS 
+line.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpsmon
+tcp://localhost:2947          NMEA0183&gt;
+┌──────────────────────────────────────────────────────────────────────────────┐
+│Time: 2021-08-22T21:53:45.000Z Lat:  XX XX' XX.XXXX0" Non:  XX XX' XX.XXXX0" W│
+└───────────────────────────────── Cooked TPV ─────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ GPGST GNGGA GPGSA GLGSA GNRMC GNZDA GPGRS GPGSV GLGSV                        │
+└───────────────────────────────── Sentences ──────────────────────────────────┘
+┌──────────────────┐┌────────────────────────────┐┌────────────────────────────┐
+│Ch PRN  Az El S/N ││Time:      215345.000       ││Time:      215345.000       │
+│ 0  XX  XX XX  41 ││Latitude:     4XXX.XXXX N   ││Latitude:  4XXX.XXXX        │
+│ 1  XX  XX XX  37 ││Longitude:   07XXX.XXXX W   ││Longitude: 07XXX.XXXX       │
+│ 2  XX XXX XX  28 ││Speed:     0.26             ││Altitude:  1XX.X            │
+│ 3  XX XXX XX  36 ││Course:    94.750           ││Quality:   1   Sats: 08     │
+│ 4  XX XXX XX  27 ││Status:    A       FAA: A   ││HDOP:      1.17             │
+│ 5  XX  XX XX  21 ││MagVar:                     ││Geoid:     -34.2            │
+│ 6  XX XXX XX   0 │└─────────── RMC ────────────┘└─────────── GGA ────────────┘
+│ 7  XX XXX XX   0 │┌────────────────────────────┐┌────────────────────────────┐
+│ 8  XX XXX XX   0 ││Mode: A3 Sats: 23 24 10 18  ││UTC: 215345.000RMS: 7.3     │
+│ 9 XXX  XX XX   0 ││DOP: H=1.17  V=0.91  P=1.48 ││MAJ: 4.5       MIN: 4.0     │
+│10  XX  XX XX  40 ││TOFF:  0.319084138          ││ORI: 164.5     LAT: 4.4     │
+│11  XX 1XX XX  37 ││PPS:  0.000759500           ││LON: 4.1       ALT: 24      │
+└────── GSV ───────┘└──────── GSA + PPS ─────────┘└─────────── GST ────────────┘
+(72) $GPGRS,215344.000,1,-5.93,-0.14,0.83,36.9,3.35,9.75,-0.36,-2.94,,,,*72
+(51) $GPGST,215344.000,7.4,4.4,3.9,150.3,4.3,4.0,23*40
+------------------- PPS offset:  0.000759500 ------
+(75) $GNGGA,215345.000,4XXX.XXXX,N,07XXX.XXXX,W,1,08,1.17,1XX.X,M,-34.2,M,,*4E
+(52) $GPGSA,A,3,23,18,24,15,10,,,,,,,,1.48,1.17,0.91*0B
+(48) $GLGSA,A,3,69,78,68,,,,,,,,,,1.48,1.17,0.91*12
+(71) $GNRMC,215345.000,A,4XXX.XXXX,N,07XXX.XXXX,W,0.26,94.75,220821,,,A*5E
+(35) $GNZDA,215345.000,22,08,2021,,*45
+(71) $GPGRS,215345.000,1,-5.51,0.95,0.27,37.1,2.82,10.6,-2.84,-3.96,,,,*57
+(51) $GPGST,215345.000,7.3,4.5,4.0,164.5,4.4,4.1,24*49
+------------------- PPS offset:  0.000758989 ------
+</code></pre></div></div>
+
+<p>Note the “PPS offset” lines and the PPS time offset in the display.
+That means GPSD is receiving everything and can send the data to the desired timekeeping daemon.</p>
+
+<h2 id="timekeeping">Timekeeping</h2>
+
+<p>Before configuring chrony, run <code class="language-plaintext highlighter-rouge">ntpshmmon</code> as root to find the shared memory (SHM) sources that GPSD is already populating.
+Despite its name starting with “ntp”, <code class="language-plaintext highlighter-rouge">ntpshmmon</code> is part of the gpsd package.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo ntpshmmon
+ntpshmmon version 1
+#      Name Seen@                Clock                Real                 L Prec
+sample NTP0 1629680609.372849180 1629680608.363601521 1629680608.000000000 0 -20
+sample NTP2 1629680609.373066773 1629680609.041970056 1629680609.000000000 0 -30
+sample NTP0 1629680609.385268612 1629680609.384725334 1629680609.000000000 0 -20
+sample NTP2 1629680610.042570932 1629680610.041973357 1629680610.000000000 0 -30
+</code></pre></div></div>
+
+<p>The precision (Prec) field is the precision of the clock scaled with <code class="language-plaintext highlighter-rouge">log(2)</code>.
+The lower the value in the precision column, the more accurate that clock is.</p>
+
+<p>Usually the NMEA clock is at NTP0 and 1PPS is at NTP1.
+With this HAT the 1PPS appears at NTP2 (note the more accurate precision of -30 vs -20).</p>
+
+<h3 id="chrony">chrony</h3>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">/etc/chrony/chrony.conf</code> to use the clocks from GPSD.
+I kept the <code class="language-plaintext highlighter-rouge">pool</code> line to allow chrony to synchronize with hosts over the internet until it can determine the accuracy of the PPS clock.
+The <code class="language-plaintext highlighter-rouge">precision</code> is because chrony cannot read the precision from the shared memory segments.
+The <code class="language-plaintext highlighter-rouge">delay</code> is 
+because the GPS NMEA data is read over a relatively slow serial port and
+ the larger delay allows greater range for overlap when reading the two 
+clocks.
+I will adjust it later once its offset is known.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>refclock SHM 0 refid GPS precision 1e-1 delay 0.1
+refclock SHM 2 refid PPS precision 1e-7
+</code></pre></div></div>
+
+<p>Restart chrony.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl restart chrony.service
+</code></pre></div></div>
+
+<p>Now wait a while and check periodically to see if chrony picked the PPS clock.
+When it does, “PPS” clock will have the prefix be <code class="language-plaintext highlighter-rouge">#*</code>.
+Any other sources mixed in with the chosen source will have a prefix of “+” while a prefix of “-“ or “x” are excluded sources.</p>
+
+<p>I added the <code class="language-plaintext highlighter-rouge">-n</code> argument to make <code class="language-plaintext highlighter-rouge">chronyc</code> not try to resolve the IPs to display the output faster.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ chronyc -n sources
+210 Number of sources = 6
+MS Name/IP address         Stratum Poll Reach LastRx Last sample
+===============================================================================
+#x GPS                           0   4   377    17   +387ms[ +387ms] +/-  150ms
+#* PPS                           0   4   377    18   -592ns[-1062ns] +/-  851ns
+...
+</code></pre></div></div>
+
+<p>After waiting for sample times to settle, I used the offset under the
+ “Last sample” column to set an offset for the GPS NMEA clock in the 
+config to bring it closer to the PPS clock and prevent chrony from 
+classifying it as a “falseticker” (the “x” in “#x”).</p>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">/etc/chrony/chrony.conf</code> to set an offset and then restart <code class="language-plaintext highlighter-rouge">chrony.service</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>refclock SHM 0 refid GPS precision 1e-1 offset 0.370
+</code></pre></div></div>
+<p>Note the addition of <code class="language-plaintext highlighter-rouge">offset</code> to add a fixed offset to that clock and the removal of <code class="language-plaintext highlighter-rouge">delay</code> because the clock is approximately correct with an offset.</p>
+
+<h2 id="serving-time">Serving Time</h2>
+<p>If you are not interested in using the Raspberry Pi as a time server then you are done.
+If you are interested, continue onwards.</p>
+
+<h3 id="chrony-1">chrony</h3>
+<p>Edit <code class="language-plaintext highlighter-rouge">/etc/chrony/chrony.conf</code> to enable other clients to connect to chronyd.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow 192.168.0.0/24
+# If you also have IPv6 on the subnet.
+allow 2600:8394:a947:bf::/64
+</code></pre></div></div>
+<p>Restart chrony to enable serving time.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl restart chrony.service
+</code></pre></div></div>
+
+<h3 id="dhcp">DHCP</h3>
+
+<p>I use pfSense as a router and first set the Raspberry Pi to have a 
+fixed IP address and then added that IP address as an NTP server on the 
+LAN interface.
+My Fedora laptop automatically picked up the new NTP server but a 
+different Raspberry Pi running Debian and a FreeBSD server did not.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ chronyc -n sources
+MS Name/IP address         Stratum Poll Reach LastRx Last sample
+===============================================================================
+^? ...
+^* 192.168.0.4                   1   9   377   469    -11us[ -114us] +/- 1260us
+</code></pre></div></div>
+
+<p>That is almost one millisecond accuracy over WiFi.
+The other Raspberry Pi averages 300 µs accuracy over Ethernet.</p>
+
+<h2 id="sources">Sources</h2>
+<ul>
+  <li><a href="https://learn.adafruit.com/adafruit-ultimate-gps-hat-for-raspberry-pi/basic-test">Adafruit Ultimate GPS HAT for Raspberry Pi Tutorial</a>.
+This was useful for setting up the Raspberry Pi’s serial port and checking the serial device. The tutorial used <code class="language-plaintext highlighter-rouge">/dev/ttyAMA0</code> but it’s <code class="language-plaintext highlighter-rouge">/dev/ttyS0</code> on Raspberry Pi 3 and newer.</li>
+  <li><a href="http://unixwiz.net/techtips/raspberry-pi3-gps-time.html">Steve Friedl’s  Building a GPS Time Server with the Raspberry Pi 3</a>
+I found this helpful as proof that everything would work.
+He used a Raspberry Pi 3 but the same HAT.</li>
+  <li><a href="https://gpsd.gitlab.io/gpsd/gpsd-time-service-howto.html">GPSD Time Service HOWTO</a>
+This was invaluable for learning how GPSD interacted with chrony and NTP.
+How to configure the two time keeping daemons was pulled from this site.
+Additional information on tuning performance is also available.</li>
+</ul>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Blog</li>
+          <li><a href="mailto:"></a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  
+
+
+</body></html>

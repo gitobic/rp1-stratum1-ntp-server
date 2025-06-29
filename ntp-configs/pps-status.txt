@@ -1,0 +1,10 @@
+trying PPS source "/dev/pps0"
+found PPS source "/dev/pps0"
+ok, found 1 source(s), now start fetching data...
+source 0 - assert 1751222000.000002331, sequence: 2749 - clear  0.000000000, sequence: 0
+source 0 - assert 1751222001.000002421, sequence: 2750 - clear  0.000000000, sequence: 0
+source 0 - assert 1751222001.999999548, sequence: 2751 - clear  0.000000000, sequence: 0
+source 0 - assert 1751222003.000001638, sequence: 2752 - clear  0.000000000, sequence: 0
+source 0 - assert 1751222004.000001469, sequence: 2753 - clear  0.000000000, sequence: 0
+source 0 - assert 1751222005.000001504, sequence: 2754 - clear  0.000000000, sequence: 0
+source 0 - assert 1751222006.000001964, sequence: 2755 - clear  0.000000000, sequence: 0

@@ -1,0 +1,7 @@
+ Static hostname: tick
+       Icon name: computer
+      Machine ID: b1631d799eaf44489c181b7720cc20b3
+         Boot ID: 3050f8b0a785415fbad850b9123a6071
+Operating System: Debian GNU/Linux 12 (bookworm)
+          Kernel: Linux 6.6.74+rpt-rpi-v8
+    Architecture: arm64

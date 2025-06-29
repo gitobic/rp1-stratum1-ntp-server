@@ -1,0 +1,9 @@
+Name/IP Address            NP  NR  Span  Frequency  Freq Skew  Offset  Std Dev
+==============================================================================
+PPS                        36  18   559     +0.000      0.003     +0ns   659ns
+GPS                        64  48  1009    +15.738     44.047    -50ms    30ms
+chi3.us.ntp.li             28  16   44m     -0.017      0.015   -740us    18us
+connected.by.freedominte>  22  11   28m     -0.042      0.031   -760us    17us
+vps-4e90522b.vps.ovh.us    28  13   44m     -0.017      0.022   -746us    21us
+time.cloudflare.com        28  15   44m     -0.018      0.013   -729us    12us
+tick.internal               0   0     0     +0.000   2000.000     +0ns  4000ms

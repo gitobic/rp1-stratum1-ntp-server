@@ -1,0 +1,10 @@
+{"class":"VERSION","release":"3.22","rev":"3.22","proto_major":3,"proto_minor":14}
+{"class":"DEVICES","devices":[{"class":"DEVICE","path":"/dev/serial0","driver":"MTK-3301","subtype":"AXN_5.1.6_3333_18041700-0005","activated":"2025-06-29T18:33:26.976Z","flags":1,"native":0,"bps":9600,"parity":"N","stopbits":1,"cycle":1.00,"mincycle":0.10},{"class":"DEVICE","path":"/dev/pps0","driver":"PPS","activated":"2025-06-29T18:33:27.000Z"}]}
+{"class":"WATCH","enable":true,"json":true,"nmea":false,"raw":0,"scaled":false,"timing":false,"split24":false,"pps":false}
+{"class":"GST","device":"/dev/serial0","time":"2025-06-29T18:33:26.000Z","rms":5.100,"major":4.500,"minor":2.400,"orient":141.200,"lat":3.800,"lon":3.400,"alt":4.400}
+{"class":"TPV","device":"/dev/serial0","status":2,"mode":3,"time":"2025-06-29T18:33:27.000Z","ept":0.005,"lat":28.505361667,"lon":-81.506833333,"altHAE":45.3000,"altMSL":76.2000,"alt":76.2000,"epx":1.941,"epy":2.110,"epv":4.600,"track":301.7000,"magtrack":295.2476,"magvar":-6.5,"speed":0.268,"climb":-0.200,"eps":4.22,"epc":9.20,"geoidSep":-30.900,"eph":3.467,"sep":5.130}
+{"class":"GST","device":"/dev/serial0","time":"2025-06-29T18:33:27.000Z","rms":5.000,"major":1.600,"minor":1.300,"orient":169.200,"lat":1.600,"lon":1.300,"alt":4.200}
+{"class":"PPS","device":"/dev/pps0","real_sec":1751222008,"real_nsec":0,"clock_sec":1751222008,"clock_nsec":2181,"precision":-20}
+{"class":"TPV","device":"/dev/serial0","status":2,"mode":3,"time":"2025-06-29T18:33:28.000Z","ept":0.005,"lat":28.505363333,"lon":-81.506833333,"altHAE":45.5000,"altMSL":76.4000,"alt":76.4000,"epx":1.941,"epy":2.110,"epv":4.600,"track":301.7000,"magtrack":295.2476,"magvar":-6.5,"speed":0.216,"climb":0.200,"eps":4.22,"epc":9.20,"geoidSep":-30.900,"eph":3.467,"sep":5.130}
+{"class":"GST","device":"/dev/serial0","time":"2025-06-29T18:33:28.000Z","rms":5.000,"major":1.500,"minor":1.200,"orient":168.700,"lat":1.500,"lon":1.200,"alt":4.200}
+{"class":"PPS","device":"/dev/pps0","real_sec":1751222009,"real_nsec":0,"clock_sec":1751222009,"clock_nsec":1660,"precision":-20}

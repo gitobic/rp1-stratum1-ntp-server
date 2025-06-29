@@ -1,0 +1,2 @@
+KERNEL=="pps0", OWNER="root", GROUP="_chrony", MODE="0660"
+KERNEL=="ttyS0", RUN+="/bin/setserial -v /dev/%k low_latency irq 4"

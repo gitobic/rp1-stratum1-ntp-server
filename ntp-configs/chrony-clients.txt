@@ -1,0 +1,16 @@
+Hostname                      NTP   Drop Int IntL Last     Cmd   Drop Int  Last
+===============================================================================
+localhost                       0      0   -   -     -      89      0   3   232
+tick.internal                  38      0   8   -    24       0      0   -     -
+pve.internal                   37      0   7   -   110       0      0   -     -
+green.internal                 22      0   8   -    26       0      0   -     -
+gray.internal                  15      0   8   -   105       0      0   -     -
+black.internal                  2      0  11   -   557       0      0   -     -
+blue.internal                   2      0  10   -   23m       0      0   -     -
+orange.internal                 3      0  10   -   351       0      0   -     -
+teal.internal                   2      0  11   -   137       0      0   -     -
+red.internal                    1      0   -   -   20m       0      0   -     -
+purple-01.internal              9      0   4   -   565       0      0   -     -
+purple-02.internl               6      0   4   -   573       0      0   -     -
+purple-03.internal              6      0   4   -   564       0      0   -     -
+purple-04.internal              6      0   4   -   495       0      0   -     -

@@ -1,0 +1,9 @@
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+#* PPS                           0   4   377    16   +115ns[ +128ns] +/-  281ns
+#- GPS                           0   4   377    15    -60ms[  -60ms] +/-  100ms
+^- chi3.us.ntp.li                2   9   377    81   -736us[ -736us] +/-   41ms
+^- connected.by.freedominte>     2   8   377    16   -715us[ -715us] +/-   42ms
+^- vps-4e90522b.vps.ovh.us       2   9   377    83   -771us[ -771us] +/-   41ms
+^- time.cloudflare.com           2   9   377    88   -729us[ -729us] +/-   41ms
+^? tick.internal                 0   8   377     -     +0ns[   +0ns] +/-    0ns
