@@ -27,12 +27,12 @@ echo "➤ Saving /etc/udev/rules.d/pps-sources.rules (if exists)"
 [ -f /etc/udev/rules.d/pps-sources.rules ] && cp /etc/udev/rules.d/pps-sources.rules "$EXPORT_DIR/pps-sources.rules"
 
 # 4. Boot config
-echo "➤ Saving /boot/config.txt"
-cp /boot/config.txt "$EXPORT_DIR/config.txt"
+echo "➤ Saving /boot/firmware/config.txt"
+cp /boot/firmware/config.txt "$EXPORT_DIR/config.txt"
 
 # 5. Optional: cmdline.txt (if modified)
-echo "➤ Saving /boot/cmdline.txt"
-cp /boot/cmdline.txt "$EXPORT_DIR/cmdline.txt"
+echo "➤ Saving /boot/firmware/cmdline.txt"
+cp /boot/firmware/cmdline.txt "$EXPORT_DIR/cmdline.txt"
 
 # 6. Status snapshots
 echo "➤ Capturing chronyc and GPS/pps state..."
